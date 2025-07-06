@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { addTodoApi } from "../api/todos/addTodo";
 import { toast } from "react-toastify";
 import { getTodoApi } from "../api/todos/getTodo";
-import { PenLine, X } from "lucide-react";
+import { deleteTodoApi } from "../api/todos/deleteTodo";
+import TodoItem from "../components/TodoItem";
 // import { log } from "console";
+import { editTodoApi } from "../api/todos/editTodo";
 
 const initialInput = {
   title: "",
@@ -46,6 +48,18 @@ function TodoListPage() {
 
       toast.success("create todo success !!");
       setInput(initialInput);
+      fetchTodoList();
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.msg);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteTodoApi(id);
+      toast.success("delete todo success !!");
+      fetchTodoList();
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.msg);
@@ -86,21 +100,13 @@ function TodoListPage() {
 
       <div className="space-y-6">
         {todos.map((todo) => (
-          <div key={todo.id}>
-            <div className="flex gap-1 items-center">
-              <input type="checkbox" checked={todo.completed} />
-              <h1>{todo.title}</h1>
-            </div>
-            <p>{todo.descript}</p>
-            <div>
-              <button>
-                <PenLine width={16} />
-              </button>
-              <button>
-                <X width={16} />
-              </button>
-            </div>
-          </div>
+          // {TodoItem(3,6)}
+          <TodoItem
+            fetchTodoList={fetchTodoList}
+            key={todo.id}
+            todo={todo}
+            handleDelete={handleDelete}
+          />
         ))}
       </div>
     </div>
